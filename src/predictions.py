@@ -29,7 +29,6 @@ class SetFunctions:
         
 
         for i in range(rows_to_pred):
-            print(i)
             df_past,df_future=SetFunctions.get_future_and_past(df,i)
             
             df_past = df_past.loc[:, df_past.apply(lambda col: col.nunique() > 1, axis=0)]
@@ -81,7 +80,6 @@ class SetFunctions:
 
 
         for i in range(rows_to_pred):
-            print(i)
 
             df_past,df_future=SetFunctions.get_future_and_past(df,i)
             df_past = df_past.loc[:, df_past.apply(lambda col: col.nunique() > 1, axis=0)]
