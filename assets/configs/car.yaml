@@ -1,0 +1,212 @@
+type_analysis: "ts_only"
+data_extraction:
+  name: "ts_only/monthly-car-sales"
+  ts_column: "Month"
+  prediction_column: "Sales"
+  categoric_numeric_columns: []
+  type_extraction: "local_csv"
+  excel_split: True
+  s3_id:
+  s3_key:
+  clean_columns_rows: 
+
+preprocessing:
+  deal_na: "substitute_interpolate"
+  substitute_na_value: 
+  interpolation_approach: "spline"
+  interpolation_order: "3"
+  date_type: "Y-M"
+  ts_to_move: null  
+  difference: "one"
+  aggr_lvl: null  
+  aggr_time: True
+  aggr_time_level: "monthly"
+  mean_columns: ["Sales"]
+  sum_columns:  []
+  unique_columns: []
+  columns_to_shift: []
+  columns_to_divide_by_time: []
+  number_to_divide_by_time: 1
+  type_normalization: "robust_scaler"
+  normalize: True
+  normalize_if_not_diff: False
+  normalize_independent_var: False
+  cut_extremes: False
+
+ts_into_tab:
+  steps: 13
+  compute_lags: True
+  metric: "HQIC"
+  max_lags: 50
+  vars_to_lag: ["Sales"]
+
+feature_eng:
+    add_date: True
+    add_holidays: False
+    country: 'US'
+    years_list: [2016,2017,2018]
+
+    mean_vars: []
+    median_vars: []
+    mean_weighted_vars: [["Sales", "1", "6"], ["Sales", "12", "13"]]
+
+    
+EDA:
+    vars_to_plot_scatter: []
+    vars_to_add_heatmap: []
+    feature_eng_vars: True
+
+model: 
+  
+  percentage_predicted: 20
+  use_feature_eng_on_ts_models: True
+  use_lags_on_ts_models: True
+
+  use_original_for_baseline: True
+    
+  arima:
+    max_p: 4
+    max_q: 4
+
+
+  tbats:
+    optimize_params: True
+    optimize_only_once: True
+    max_sp: [7,30]
+
+    tbats_params:
+      sp: 7
+    
+
+  prophet:
+    parallel: True
+    optimize_params: True
+    prophet_initial: 2000
+    prophet_horizon: 30
+
+    optimize_only_once: True
+    prophet_params:
+      growth : 'linear'
+      yearly_seasonality : False
+      weekly_seasonality : True
+      daily_seasonality : True
+      seasonality_mode : 'additive'
+
+    prophet_grid:
+      growth : ['linear', 'logistic']
+      yearly_seasonality : [True]
+      weekly_seasonality : [False]
+      daily_seasonality : [False]
+      seasonality_mode : ['additive', 'multiplicative']
+      changepoint_prior_scale: [0.001,0.1, 0.5]
+      seasonality_prior_scale: [0.01, 1.0, 10.0]
+    cap:
+
+
+
+  prophet_ex:
+    parallel: True
+    optimize_params: True
+    prophet_initial: 2000
+    prophet_horizon: 30
+    optimize_only_once: True
+
+    prophet_ex_params:
+      growth : 'linear'
+      yearly_seasonality : False
+      weekly_seasonality : True
+      daily_seasonality : True
+      seasonality_mode : 'additive'
+
+    prophet_ex_grid:
+      growth : ['linear', 'logistic']
+      yearly_seasonality : [True]
+      weekly_seasonality : [False]
+      daily_seasonality : [False]
+      seasonality_mode : ['additive', 'multiplicative']
+      changepoint_prior_scale: [0.001,0.1, 0.5]
+      seasonality_prior_scale: [0.01, 1.0, 10.0]
+    cap:
+
+
+  xgb:
+    optimize_params: True
+    optimize_only_once: True
+
+
+    xgb_params:
+      n_estimators: 100
+      max_depth: 6
+      learning_rate: 0.1
+      colsample_bytree: 0.8
+
+    xgb_param_grid:
+      n_estimators: [50, 200]
+      max_depth: [3,9]
+      learning_rate: [0.01, 0.2]
+      colsample_bytree: [ 0.7, 1.0]
+
+  rf:
+    optimize_params: True
+    optimize_only_once: True
+
+    rf_params:
+      n_estimators: 100
+      max_depth: null  
+      max_features: 'sqrt'
+      min_samples_split: 2
+
+    rf_param_grid:
+      n_estimators: [100, 300]
+      max_depth: [null  , 10]
+      max_features: [null,10, 'sqrt']
+      min_samples_split: [2, 10]
+
+  svr:
+    optimize_params:  True
+    optimize_only_once: True
+
+    svr_params:
+      C: 1.0
+      epsilon: 0.1
+      kernel: 'rbf'
+
+    svr_param_grid:
+      C: [0.1, 1.0, 10.0]
+      epsilon: [0.01, 1.0]
+      kernel: [ 'poly', 'rbf', 'sigmoid']
+
+  elastic:
+    optimize_params: True
+    optimize_only_once: True
+
+    elastic_params:
+      alpha: 1.0
+      l1_ratio: 0.5
+      max_iter : 100000
+
+    elastic_param_grid:
+      alpha: [0.01, 1.0, 10.0]
+      l1_ratio: [0.1, 0.5, 0.9]
+      max_iter : [100000]
+
+  knn:
+    optimize_params: True
+    optimize_only_once: True
+
+    knn_params:
+      n_neighbors: 5
+      weights: 'uniform'
+      p: 2
+
+    knn_param_grid:
+      n_neighbors: [3, 5,9]
+      weights: ['uniform', 'distance']
+      p: [1, 2]
+
+
+model_selector:
+  min_steps: 6
+  ignore_models: []
+  exclude_bagging_models: False
+ 
