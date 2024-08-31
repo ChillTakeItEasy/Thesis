@@ -65,8 +65,7 @@ class TsModels:
                 start_q=0,
                 max_p=config["model"]["arima"]["max_p"],
                 max_q=config["model"]["arima"]["max_q"],
-                d=0, #TODO: See if we put results from EDA analysis or let this model prediction decide
-                D=None,
+                d=0,                 D=None,
                 stepwise=False #No computation time limit
             )
 
@@ -78,7 +77,7 @@ class TsModels:
                 start_q=0,
                 max_p=config["model"]["arima"]["max_p"],
                 max_q=config["model"]["arima"]["max_q"],
-                d=None, #TODO: See "if" we put results from EDA analysis or let this model prediction decide
+                d=None,
                 D=None,
                 stepwise=False #No computation time limit
             )
@@ -269,9 +268,8 @@ class TsModels:
 
         param_grid=config["model"]["prophet"]["prophet_grid"]
         all_params = [dict(zip(param_grid.keys(), v)) for v in itertools.product(*param_grid.values())]
-        rmses = []  # Store the RMSEs for each params here
+        rmses = [] 
 
-        # Use cross validation to evaluate all parameters
         
         for params in all_params:
             try:
@@ -414,7 +412,6 @@ class TsModels:
         all_params = [dict(zip(param_grid.keys(), v)) for v in itertools.product(*param_grid.values())]
         rmses = []  # Store the RMSEs for each params here
 
-        # Use cross validation to evaluate all parameters
         for params in all_params:
             try:
                 if params["growth"]=="logistic":
@@ -438,7 +435,7 @@ class TsModels:
                 
             for regressor in exo_columns:
                 m.add_regressor(regressor)
-            m.fit(df)  # Fit model with given params
+            m.fit(df) 
             if config["model"]["prophet_ex"]["parallel"]:
                 df_cv = cross_validation(m, initial=f"{config['model']['prophet_ex']['prophet_initial']} days"  ,horizon=f"{config['model']['prophet_ex']['prophet_horizon']} days",parallel="processes")
             else:

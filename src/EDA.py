@@ -130,23 +130,23 @@ class EDA:
                     
             elif freq=="weekly":
                 try:
-                    df_.index.freq = 'W-MON'  # Manually setting frequency to monthly
+                    df_.index.freq = 'W-MON'  # Manually setting frequency to weekly
                 except:
                     df_ = df_.resample('W-MON').ffill() 
                 
             else:
                 try:
-                    df_.index.freq = 'D'  # Manually setting frequency to monthly
+                    df_.index.freq = 'D'  # Manually setting frequency to daily
                 except:
                     df_ = df_.resample('D').ffill() 
 
             decomposition = seasonal_decompose(df_[var_to_plot], model='additive')
             fig = decomposition.plot()
             for ax in fig.axes:
-                plt.sca(ax)  # set current axis
-                plt.xticks(rotation=45)  # rotate ticks
+                plt.sca(ax) 
+                plt.xticks(rotation=45)  
             
-            plt.tight_layout()  # adjust subplots to fit into figure area.
+            plt.tight_layout() 
             plt.show()
         except Exception:
             print("ALERT: no trend decomposition due to small sample")

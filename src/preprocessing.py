@@ -97,7 +97,6 @@ class Preprocessing:
         else:
             prefix = '19'
         
-        # Construct the adjusted date string
         adjusted_date_str = f"{prefix}{date_str}"
         
         return adjusted_date_str
@@ -115,7 +114,6 @@ class Preprocessing:
             df["date_subs"] = pd.to_datetime(df[config["data_extraction"]["ts_column"]], errors='coerce')
             
             
-            # Extract the date part
             df["date_subs"] = df["date_subs"].dt.date
             
             df.drop(columns=[config["data_extraction"]["ts_column"]],inplace=True)
@@ -137,7 +135,6 @@ class Preprocessing:
 
 
 
-    #TODO: ADD FECHAS BIEN CON TODO LOS DATOS 
     @staticmethod
     def get_time_groups(df_,config):
         
@@ -152,14 +149,12 @@ class Preprocessing:
                 # Calculate the Monday of the week for each date
                 monday = df_date - pd.to_timedelta(df_date.dt.dayofweek, unit='D')
 
-                # Extract year and week number
                 df["date"]=monday
 
             elif config["preprocessing"]["aggr_time_level"]=="monthly":
                 df_date = df[config["data_extraction"]["ts_column"]]
 
 
-                # Extract year and week number
                 year_week = df_date.dt.strftime('%Y-%m')
                 
                 df["date"]=pd.to_datetime(year_week, format='%Y-%m')

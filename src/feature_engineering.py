@@ -22,7 +22,7 @@ class TsIntoTabular:
         return df.drop(columns=f"lag_{var_to_predict}")
     
     @staticmethod
-    def get_lag(df_,config,var_use):#TODO: Quitar ifs
+    def get_lag(df_,config,var_use):
         df=df_.copy()
 
         n=config["ts_into_tab"]["steps"]

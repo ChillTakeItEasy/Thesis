@@ -33,15 +33,12 @@ class TbModels:
         xg_reg = xgb.XGBRegressor(objective='reg:squarederror', seed=42)
         X=df[config["tab_exo_columns"]]
         y=df[config["var_in_use"]]
-        # Define the parameter grid
         param_grid = config["model"]["xgb"]["xgb_param_grid"]
 
-        # Create the GridSearchCV object
         grid_search = GridSearchCV(estimator=xg_reg, param_grid=param_grid, 
                                 scoring='neg_mean_squared_error', 
                                 cv=3, verbose=0, n_jobs=-1)
 
-        # Fit the grid search to the data
         grid_search.fit(X, y)
 
         if config["model"]["xgb"]["optimize_only_once"]:
@@ -75,10 +72,8 @@ class TbModels:
 
             grid_search = GridSearchCV(estimator=RandomForestRegressor(), param_grid=param_grid, scoring='neg_mean_squared_error', cv=3, verbose=0 , n_jobs=-1)
 
-            # Fit GridSearchCV to the data
             grid_search.fit(X, y)
 
-            # Get the best parameters and best estimator
             if config["model"]["rf"]["optimize_only_once"]:
                 config["model"]["rf"]["optimize_params"]=False
                 config["model"]["rf"]["rf_params"]=grid_search.best_params_                 
@@ -99,7 +94,7 @@ class TbModels:
             return [forecast[0],"rf"]
     
     @staticmethod
-    def svm(df,df_future,config): #We use couse of radial kernel, linear and polynomial already applied
+    def svm(df,df_future,config): 
         if config["model"]["svr"]["optimize_params"]:
                         
             param_grid= config["model"]["svr"]["svr_param_grid"]
@@ -109,10 +104,8 @@ class TbModels:
 
             grid_search = GridSearchCV(estimator=SVR(), param_grid=param_grid, scoring='neg_mean_squared_error', cv=3, verbose=0, n_jobs=-1)
 
-            # Fit GridSearchCV to the data
             grid_search.fit(X, y)
 
-            # Get the best parameters and best estimator
             if config["model"]["svr"]["optimize_only_once"]:
                 config["model"]["svr"]["optimize_params"]=False
                 config["model"]["svr"]["svr_params"]=grid_search.best_params_                      
@@ -169,10 +162,8 @@ class TbModels:
 
             grid_search = GridSearchCV(estimator=ElasticNet(), param_grid=param_grid, scoring='neg_mean_squared_error', cv=3, verbose=0, n_jobs=-1)
 
-            # Fit GridSearchCV to the data
             grid_search.fit(X, y)
 
-            # Get the best parameters and best estimator
             if config["model"]["elastic"]["optimize_only_once"]:
                 config["model"]["elastic"]["optimize_params"]=False
                 config["model"]["elastic"]["elastic_params"]=grid_search.best_params_                      
@@ -211,15 +202,13 @@ class TbModels:
         return [forecast[0],"knn"]
     @staticmethod
     def optimize_knn(df,config):
-        param_grid = config["model"]["knn"]["knn_param_grid"]  # Example: Testing k from 1 to 30
+        param_grid = config["model"]["knn"]["knn_param_grid"]  
         knn = KNeighborsRegressor()
         X=df[config["tab_exo_columns"]]
         y=df[config["var_in_use"]]
 
-        # Set up GridSearchCV
         grid_search = GridSearchCV(estimator=knn, param_grid=param_grid, cv=3, scoring='neg_mean_squared_error', n_jobs=-1)
 
-        # Fit the model
         grid_search.fit(X, y)
         if config["model"]["knn"]["optimize_only_once"]:
             config["model"]["knn"]["optimize_params"]=False
